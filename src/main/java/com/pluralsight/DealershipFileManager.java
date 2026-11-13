@@ -3,6 +3,7 @@ package com.pluralsight;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ public class DealershipFileManager {
         try {
             String fileLine;
             int lineCount = 0;
-            while (fileLine = reader.readLine() != null) {
+            while ((fileLine = reader.readLine()) != null) {
                 String[] tokens = fileLine.split("\\|");
                 if (lineCount == 0) {
                     name = tokens[0];
@@ -34,7 +35,7 @@ public class DealershipFileManager {
                     inventory.add(new Vehicle(vin, year, make, model, vehicleType, color, odometer, price));
                 }
             }
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             System.out.println("File not found!");
             e.printStackTrace();
         }
