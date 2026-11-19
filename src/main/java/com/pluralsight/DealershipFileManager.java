@@ -1,9 +1,6 @@
 package com.pluralsight;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +43,11 @@ public class DealershipFileManager {
         return output;
     }
 
-    public static void saveDealership(Dealership toSave) {
-
+    public static void saveDealership(Dealership toSave) throws IOException {
+        BufferedWriter bufWriter = new BufferedWriter(new FileWriter("src/main/resources/inventory.csv"));
+        String header = String.format("%s|%s|%s", toSave.getName(), toSave.getAddress(), toSave.getPhone());
+        bufWriter.write(header + "\n");
+        for (Vehicle v : toSave.getVehicles(v -> true)) bufWriter.write(v.toCsv() + "\n");
+        bufWriter.close();
     }
 }
