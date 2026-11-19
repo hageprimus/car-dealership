@@ -7,67 +7,74 @@ import java.util.Scanner;
 public class UserInterface {
     private static final String MAIN_MENU = """
             Enter an option:
+            0 - Display all vehicles.
             1 - Display vehicles by a given price range.
-            2 -
+            2 - Display vehicles by make and model.
+            3 - Display vehicles by year.
+            4 - Display vehicles by color.
+            5 - Display vehicles by mileage.
+            6 - Display vehicles by type.
+            7 - EXIT
             """;
 
-    private Dealership dealership;
-    private UserInterface(){};
+    private static Dealership dealership;
+    private UserInterface(){}
 
-    public void display() throws FileNotFoundException {
+    public static void display() throws FileNotFoundException {
         init();
         Scanner s = new Scanner(System.in);
         boolean complete = false;
         do {
-            String userInput = getInputFromConsole(MAIN_MENU, s, false);
+            String userInput = getInputFromConsole(MAIN_MENU, s);
             int command = Integer.parseInt(userInput);
             switch (command) {
+                case 0 -> displayVehicles(dealership.getVehicles(v -> true));
                 case 1 -> {
-                    double min = Integer.parseInt(getInputFromConsole("Enter the low end of the price range to search.", s, false));
-                    double max = Integer.parseInt(getInputFromConsole("Enter the high end of the price range to search.", s, false));
-                    displayVehicles(dealership.getVehicles(tester -> searchPrice(min, max)));
+                    double min = Double.parseDouble(getInputFromConsole("Enter the low end of the price range to search.", s));
+                    double max = Double.parseDouble(getInputFromConsole("Enter the high end of the price range to search.", s));
+                    displayVehicles(dealership.getVehicles(v -> dealership.searchPrice(min, max, v)));
+                }
+                case 2 -> {
+                    String make = getInputFromConsole("Enter the make (manufacturer) of the vehicle to search.", s);
+                    String model = getInputFromConsole("Enter the model type to search.", s);
+                    displayVehicles(dealership.getVehicles(v -> dealership.searchMakeModel(make, model, v)));
+                }
+                case 3 -> {
+                    int min = Integer.parseInt(getInputFromConsole("Enter the oldest year of the range to search.", s));
+                    int max = Integer.parseInt(getInputFromConsole("Enter the most recent year of range to search.", s));
+                    displayVehicles(dealership.getVehicles(v -> dealership.searchYear(min, max, v)));
+                }
+                case 4 -> {
+                    String color = getInputFromConsole("Enter the color of vehicle to search.", s);
+                    displayVehicles(dealership.getVehicles(v -> dealership.searchColor(color, v)));
+                }
+                case 5 -> {
+                    int min = Integer.parseInt(getInputFromConsole("Enter the low end of the mileage range to search.", s));
+                    int max = Integer.parseInt(getInputFromConsole("Enter the high end of the mileage range to search.", s));
+                    displayVehicles(dealership.getVehicles(v -> dealership.searchMileage(min, max, v)));
+                }
+                case 6 -> {
+                    String type = getInputFromConsole("Enter the type of vehicle to search for.", s);
+                    displayVehicles(dealership.getVehicles(v -> dealership.searchType(type, v)));
+                }
+                case 7 -> {
+                    System.out.println("Exiting program.");
+                    complete = true;
                 }
             }
         } while (!complete);
         s.close();
     }
 
-    private void init() throws FileNotFoundException {
+    private static void init() throws FileNotFoundException {
         dealership = DealershipFileManager.getDealership();
     }
 
-    public boolean searchPrice(double min, double max) {
-        return true;    //TODO
-    }
-
-    public boolean searchMakeModel(String make, String model) {
-        return true;    //TODO
-    }
-
-    public boolean searchYear(int min, int max) {
-        return true;    //TODO
-    }
-
-    public boolean searchColor(String color) {
-        return true;    //TODO
-    }
-
-    public boolean searchMileage(int min, int max) {
-        return true;    //TODO
-    }
-
-    public boolean searchType(String vehicleType) {
-        return true;    //TODO
-    }
-
     private static void displayVehicles(List<Vehicle> display) {
-        for (Vehicle v : display) {
-            System.out.println(v);
-        }
+        display.forEach(System.out::println);
     }
 
-    private static String getInputFromConsole(String display, Scanner s, boolean clearBuffer) {
-        if (clearBuffer) s.nextLine();
+    private static String getInputFromConsole(String display, Scanner s) {
         System.out.println(display);
         return s.nextLine().trim();
     }

@@ -13,7 +13,7 @@ public class DealershipFileManager {
         String name = "", address = "", phone = "";
         List<Vehicle> inventory = new ArrayList<>();
 
-        BufferedReader reader = new BufferedReader(new FileReader("src/java/resources/inventory.csv"));
+        BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/inventory.csv"));
         try {
             String fileLine;
             int lineCount = 0;
@@ -34,6 +34,7 @@ public class DealershipFileManager {
                     BigDecimal price = new BigDecimal(tokens[7]);
                     inventory.add(new Vehicle(vin, year, make, model, vehicleType, color, odometer, price));
                 }
+                lineCount++;
             }
         } catch (IOException e) {
             System.out.println("File not found!");
